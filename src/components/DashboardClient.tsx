@@ -235,36 +235,6 @@ export default function DashboardClient() {
           ))}
         </div>
       </section>
-
-      <section>
-        <h2 className="text-lg font-semibold text-gray-800 mb-3">Room-wise Vacancy</h2>
-        <div className="bg-white rounded-xl shadow overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-gray-500 border-b">
-                <th className="py-2 px-3">Room</th>
-                <th className="py-2 px-3">Floor</th>
-                <th className="py-2 px-3">Capacity</th>
-                <th className="py-2 px-3">Occupied</th>
-                <th className="py-2 px-3">Vacant</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.occupancy.perRoom.map((r) => (
-                <tr key={r.roomId} className="border-b last:border-0">
-                  <td className="py-1.5 px-3 font-medium">{r.number}</td>
-                  <td className="py-1.5 px-3">{r.floor}</td>
-                  <td className="py-1.5 px-3">{r.capacity}</td>
-                  <td className="py-1.5 px-3">{r.occupied}</td>
-                  <td className={`py-1.5 px-3 ${r.vacant > 0 ? "text-green-700 font-medium" : "text-gray-400"}`}>
-                    {r.vacant}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
     </div>
   );
 }
