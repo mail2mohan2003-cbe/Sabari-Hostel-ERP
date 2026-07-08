@@ -1,0 +1,137 @@
+// Sri Sabari Ladies Hostel ERP - database schema
+// Uses Postgres so it works both locally and when deployed to Vercel (or any
+// serverless host) - a hosted Postgres instance like Neon works from anywhere
+// with internet access, unlike a local SQLite file which only works on one
+// machine. Set DATABASE_URL in .env to your Neon (or other Postgres) connection string.
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Room {
+  id         Int         @id @default(autoincrement())
+  number     String      @unique
+  capacity   Int // 2 or 4 beds
+  floor      String?
+  beds       Bed[]
+  ebReadings EBReading[]
+  createdAt  DateTime    @default(now())
+}
+
+model Bed {
+  id      Int      @id @default(autoincrement())
+  room    Room     @relation(fields: [roomId], references: [id])
+  roomId  Int
+  label   String // A, B, C, D
+  inmates Inmate[]
+
+  @@unique([roomId, label])
+}
+
+model RegistrationRequest {
+  id                       String   @id @default(cuid())
+  fullName                 String
+  dob                      DateTime
+  mobile                   String
+  email                    String?
+  fatherMotherName         String
+  fatherMotherMobile       String
+  permanentAddress         String
+  occupationType           String // Student / Trainee / Employer
+  institutionAddress       String
+  institutionPhone         String?
+  localGuardianName        String?
+  localGuardianContact     String?
+  localGuardianAddress     String?
+  emergencyContactName     String
+  emergencyContactRelation String
+  emergencyContactPhone    String
+  foodPreference           String // Veg / Non-Veg
+  addressProof             String
+  idProof                  String
+  preferredJoiningDate     DateTime
+  expectedDurationMonths   Int?
+  status                   String   @default("PENDING") // PENDING / APPROVED / REJECTED
+  rejectionReason          String?
+  createdAt                DateTime @default(now())
+  inmate                   Inmate?
+}
+
+model Inmate {
+  id                   String                @id @default(cuid())
+  registration         RegistrationRequest?  @relation(fields: [registrationId], references: [id])
+  registrationId       String?               @unique
+  fullName             String
+  dob                  DateTime
+  mobile               String
+  email                String?
+  fatherMotherName     String
+  fatherMotherMobile   String
+  permanentAddress     String
+  foodPreference       String
+  bed                  Bed?                  @relation(fields: [bedId], references: [id])
+  bedId                Int?
+  advanceAmount        Float                 @default(0)
+  joinDate             DateTime
+  expectedCheckoutDate DateTime?
+  actualCheckoutDate   DateTime?
+  status               String                @default("ACTIVE") // ACTIVE / CHECKED_OUT
+  guardians            Guardian[]
+  bills                Bill[]
+  createdAt            DateTime              @default(now())
+}
+
+model Guardian {
+  id       String  @id @default(cuid())
+  inmate   Inmate  @relation(fields: [inmateId], references: [id])
+  inmateId String
+  type     String // PARENT / LOCAL_GUARDIAN / EMERGENCY_CONTACT
+  name     String
+  relation String?
+  phone    String?
+  email    String?
+}
+
+model EBReading {
+  id          String   @id @default(cuid())
+  room        Room     @relation(fields: [roomId], references: [id])
+  roomId      Int
+  readingDate DateTime
+  reading     Float
+  createdAt   DateTime @default(now())
+  bills       Bill[]
+}
+
+model Bill {
+  id            String     @id @default(cuid())
+  inmate        Inmate     @relation(fields: [inmateId], references: [id])
+  inmateId      String
+  ebReading     EBReading? @relation(fields: [ebReadingId], references: [id])
+  ebReadingId   String?
+  type          String     @default("ELECTRICITY") // ELECTRICITY / OTHER
+  periodLabel   String // e.g. "July 2026"
+  unitsConsumed Float?
+  ratePerUnit   Float?
+  amount        Float
+  dueDate       DateTime
+  status        String     @default("PENDING") // PENDING / PAID / OVERDUE
+  createdAt     DateTime   @default(now())
+  payment       Payment?
+}
+
+model Payment {
+  id          String   @id @default(cuid())
+  bill        Bill     @relation(fields: [billId], references: [id])
+  billId      String   @unique
+  amountPaid  Float
+  paidOn      DateTime @default(now())
+  mode        String   @default("CASH") // CASH / UPI / BANK_TRANSFER / OTHER
+  receiptNo   String   @unique
+  recordedBy  String?
+  createdAt   DateTime @default(now())
+}
