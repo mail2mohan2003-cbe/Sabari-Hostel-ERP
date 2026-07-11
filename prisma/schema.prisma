@@ -42,7 +42,7 @@ model RegistrationRequest {
   fatherMotherName         String
   fatherMotherMobile       String
   permanentAddress         String
-  occupationType           String // Student / Trainee / Employer
+  occupationType           String // Student / Trainee / Employee
   institutionAddress       String
   institutionPhone         String?
   localGuardianName        String?

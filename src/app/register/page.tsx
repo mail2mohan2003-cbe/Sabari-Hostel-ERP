@@ -131,12 +131,6 @@ function validate(form: FormState): FieldErrors {
 
   if (!form.preferredJoiningDate) {
     errors.preferredJoiningDate = "Preferred date of joining is required.";
-  } else {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (new Date(form.preferredJoiningDate) < today) {
-      errors.preferredJoiningDate = "Preferred joining date cannot be in the past.";
-    }
   }
 
   if (form.expectedDurationMonths.trim()) {
@@ -323,7 +317,7 @@ export default function RegisterPage() {
             />
           </Field>
 
-          <Field label="Are you Student / Trainee / Employer" required>
+          <Field label="Are you Student / Trainee / Employee" required>
             <select
               className={fieldClass()}
               value={form.occupationType}
@@ -331,7 +325,7 @@ export default function RegisterPage() {
             >
               <option>Student</option>
               <option>Trainee</option>
-              <option>Employer</option>
+              <option>Employee</option>
             </select>
           </Field>
 
@@ -410,7 +404,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Field label="Preferred Date of Joining" required error={errors.preferredJoiningDate}>
+            <Field label="Date of Joining (past or future)" required error={errors.preferredJoiningDate}>
               <input
                 data-error={!!errors.preferredJoiningDate}
                 type="date"

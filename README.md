@@ -1,8 +1,8 @@
 # Sri Sabari Ladies Hostel - ERP
 
 A web application covering digital registration, room/bed occupancy, vacancy forecasting, EB
-(electricity) billing, payment tracking, and receipts for the hostel's 65 rooms (60 two-share, 5
-four-share = 140 beds).
+(electricity) billing, payment tracking, and receipts for the hostel's 60 rooms (55 two-share, 5
+four-share = 130 beds).
 
 ## Features
 
@@ -47,7 +47,7 @@ environment variables) with a signed session cookie - no third-party auth servic
    Set `DATABASE_URL` to the Neon connection string from step 2, plus `ADMIN_EMAIL`,
    `ADMIN_PASSWORD`, and `SESSION_SECRET`. Email and WhatsApp/SMS settings can be left blank while
    testing - the app will log to the console instead of sending.
-5. Create the database tables and seed the 65 rooms / 140 beds:
+5. Create the database tables and seed the 60 rooms / 130 beds:
    ```
    npx prisma migrate dev --name init
    npm run seed
@@ -60,7 +60,7 @@ environment variables) with a signed session cookie - no third-party auth servic
    `/admin/login` (use the `ADMIN_EMAIL` / `ADMIN_PASSWORD` you set in `.env`).
 
 If room numbering in `prisma/seed.ts` doesn't match your real numbering scheme, edit the
-`ROOM_LAYOUT` logic there before seeding (it currently numbers rooms 101-113, 201-213 ... 501-513,
+`ROOM_LAYOUT` logic there before seeding (it currently numbers rooms 101-112, 201-212 ... 501-512,
 with the last room on each floor as one of the 5 four-share rooms).
 
 ## Configuring notifications
